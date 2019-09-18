@@ -43,7 +43,7 @@ public class Drive extends Subsystem {
       angle = (controller.getY(Hand.kLeft) > 0) ? 0 : 180;
     }
 
-    System.out.println(angle);
+    System.out.println("Angle: " + angle + " Y: " + controller.getY(Hand.kLeft) + " X: " + controller.getX(Hand.kLeft));
 
   }
 
