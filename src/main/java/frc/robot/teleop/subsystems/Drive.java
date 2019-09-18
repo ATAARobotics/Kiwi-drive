@@ -24,7 +24,7 @@ public class Drive extends Subsystem {
   private WPI_TalonSRX oneTwentyDegreeMotor = new WPI_TalonSRX(1); 
   private WPI_TalonSRX twoFourtyDegreeMotor = new WPI_TalonSRX(2); 
 
-  private double theta, rawAngle, angle;
+  private double theta, rawAngle, angle, speed, turn;
   
 
   @Override
@@ -42,6 +42,10 @@ public class Drive extends Subsystem {
     } catch(Exception e) {
       angle = (controller.getY(Hand.kLeft) > 0) ? 0 : 180;
     }
+
+    speed = Math.hypot(controller.getX(Hand.kLeft), controller.getY(Hand.kLeft));
+
+    turn = controller.getY(Hand.kRight);
 
     System.out.println("Angle: " + angle + " Y: " + controller.getY(Hand.kLeft) + " X: " + controller.getX(Hand.kLeft));
 
