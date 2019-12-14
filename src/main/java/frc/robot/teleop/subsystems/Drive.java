@@ -7,44 +7,47 @@
 
 package frc.robot.teleop.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
 public class Drive extends Subsystem {
-  // Put methods for controlling this subsystem
-  // here. Call these from Commands.
+    // Put methods for controlling this subsystem
+    // here. Call these from Commands.
 
-  private WPI_TalonSRX zeroDegreeMotor = new WPI_TalonSRX(0); 
-  private WPI_TalonSRX oneTwentyDegreeMotor = new WPI_TalonSRX(1); 
-  private WPI_TalonSRX twoFourtyDegreeMotor = new WPI_TalonSRX(2); 
+    private static final int LEFT_MOTOR_1 = 0;
+    private static final int LEFT_MOTOR_2 = 1;
+    private static final int RIGHT_MOTOR_1 = 4;
+    private static final int RIGHT_MOTOR_2 = 5;
+    private static final int MIDDLE_MOTOR_1 = 2;
+    private static final int MIDDLE_MOTOR_2 = 3;
 
-  private double theta, rawAngle, angle;
-  
+    private KiwiDrivetrain drivetrain;
 
-  @Override
-  public void initDefaultCommand() {
-    // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
-  }
-  
-  public void drive(XboxController controller) {
-
-    try {
-      theta = Math.atan2(controller.getY(Hand.kLeft), controller.getX(Hand.kLeft));
-      rawAngle = Math.toDegrees(theta);
-      angle = (rawAngle >= 90) ? rawAngle - 90 : rawAngle + 270;
-    } catch(Exception e) {
-      angle = (controller.getY(Hand.kLeft) > 0) ? 0 : 180;
+    @Override
+    public void initDefaultCommand() {
+        // Set the default command for a subsystem here.
+        // setDefaultCommand(new MySpecialCommand());
     }
 
-    System.out.println("Angle: " + angle + " Y: " + controller.getY(Hand.kLeft) + " X: " + controller.getX(Hand.kLeft));
+    public void init() {
+        Talon  L1 = new Talon(LEFT_MOTOR_1);
+        Victor L2 = new Victor(LEFT_MOTOR_2);
+        Talon  R1 = new Talon(RIGHT_MOTOR_1);
+        Talon  R2 = new Talon(RIGHT_MOTOR_2);
+        Talon  M1 = new Talon(MIDDLE_MOTOR_1);
+        Talon  M2 = new Talon(MIDDLE_MOTOR_2);
 
-  }
+        drivetrain = new KiwiDrivetrain(L1, L2, R1, R2, M1, M2);
+    }
 
+    public void drive(SuperJoystickModule controller) {
+        final double xAxis = controller.getAxisWithDeadzone(0, 0, true);
+        final double yAxis = controller.getAxisWithDeadzone(1, 0, false);
+        final double zAxis = controller.getAxisWithDeadzone(2, 0, false) * 0.5;
+        final double speedMod = 1.0;
+
+        drivetrain.getKiwi(xAxis, yAxis, zAxis, speedMod);
+    }
 }
